@@ -77,3 +77,5 @@ Loader.instance.importScript(REACT_JS, function () {
 		Loader.instance.onReactJsLoaded();
 	});
 });
+
+Loader.instance.importScript("service.js");
