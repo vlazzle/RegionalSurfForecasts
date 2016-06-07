@@ -34,7 +34,7 @@ App.prototype.onReactJsLoaded = function() {
   });
 };
 
-App.prototype.onReady = function() {
+App.prototype.onEverythingLoaded = function() {
   console.log('app.js');
 
   ReactDOM.render(
