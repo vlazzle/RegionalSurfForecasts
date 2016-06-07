@@ -6,7 +6,7 @@ App.getInstance = function() {
   return App._instance;
 }
 
-App.prototype.onReactDomLoaded = function() {
+App.prototype.onReactJsLoaded = function() {
   var that = this;
   
   this.Region = React.createClass({displayName: 'Region',

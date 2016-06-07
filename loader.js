@@ -33,7 +33,7 @@ Loader.prototype.onAppJsLoadeded = function() {
 Loader.prototype.onReactJsLoaded = function() {
   console.log("onReactJsLoaded");
   this._isReactJsLoaded = true;
-  App.getInstance().onReactDomLoaded();
+  App.getInstance().onReactJsLoaded();
   this._fireWhenReady();
 };
 
@@ -68,11 +68,12 @@ Loader.getInstance = function() {
   return Loader._instance;
 };
 
+var loader = Loader.getInstance();
+
 document.addEventListener("DOMContentLoaded", function() {
-  Loader.getInstance().onDomLoadeded();
+  loader.onDomLoadeded();
 });
 
-var loader = Loader.getInstance();
 loader.importScript("app.js", function () {
   loader.onAppJsLoadeded();
 });
