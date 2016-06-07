@@ -7,18 +7,16 @@ App.getInstance = function() {
 }
 
 App.prototype.onReactJsLoaded = function() {
-  var that = this;
-  
-  this.Region = React.createClass({displayName: 'Region',
+  App.Region = React.createClass({displayName: 'Region',
     render: function() {
       return React.createElement('div', {className: 'Region'}, this.props.name);
     }
   });
 
-  this.RegionList = React.createClass({displayName: 'RegionList',
+  App.RegionList = React.createClass({displayName: 'RegionList',
     render: function() {
       var regionNodes = this.state.data.map(function(region) {
-        return React.createElement(that.Region, {name: region.name, key: region.id});
+        return React.createElement(App.Region, {name: region.name, key: region.id});
       });
       return React.createElement('div', {className: 'RegionList'}, regionNodes);
     },
@@ -57,7 +55,7 @@ App.prototype.onReactJsLoaded = function() {
 
 App.prototype.onEverythingLoaded = function() {
   ReactDOM.render(
-    React.createElement(this.RegionList),
+    React.createElement(App.RegionList),
     document.getElementById('content')
   );
 };
