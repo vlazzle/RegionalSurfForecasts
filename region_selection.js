@@ -1,3 +1,5 @@
+var DEFAULT_REGION_IDS = [2957, 2950];
+
 var RegionSelection = function() {
 };
 
@@ -9,6 +11,8 @@ RegionSelection.getInstance = function() {
 };
 
 RegionSelection.prototype.getSelectedRegionIds = function() {
-  // TODO region selection should be user controllable
-  return ['2957', '2950'];
+  // TODO region selection should come from UI
+  // e.g. ?r=2957,2950,2142
+  var match = location.search.match(/(\d+(?:,\d+)*)/);
+  return match && match[0] ? match[0].split(',') : DEFAULT_REGION_IDS;
 };
