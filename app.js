@@ -16,10 +16,19 @@ App.prototype.onReactDomLoaded = function() {
 
   this.RegionList = React.createClass({displayName: 'RegionList',
     render: function() {
-      var regionNodes = this.props.data.map(function(region) {
+      var regionNodes = this.state.data.map(function(region) {
         return React.createElement(that.Region, {name: region.name, key: region.id});
       });
       return React.createElement('div', {className: "RegionList"}, regionNodes);
+    },
+
+    getInitialState: function() {
+      var data = [
+        {id: 1, name: "region 1"},
+        {id: 2, name: "region 2"},
+        {id: 3, name: "region 3"}
+      ];
+      return {data: data};
     }
   });
 };
@@ -27,14 +36,8 @@ App.prototype.onReactDomLoaded = function() {
 App.prototype.onReady = function() {
   console.log("app.js");
 
-  var data = [
-    {id: 1, name: "region 1"},
-    {id: 2, name: "region 2"},
-    {id: 3, name: "region 3"}
-  ];
-
   ReactDOM.render(
-    React.createElement(this.RegionList, {data: data}),
+    React.createElement(this.RegionList),
     document.getElementById('content')
   );
 };
