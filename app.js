@@ -56,8 +56,6 @@ App.prototype.onReactJsLoaded = function() {
 };
 
 App.prototype.onEverythingLoaded = function() {
-  console.log('app.js');
-
   ReactDOM.render(
     React.createElement(this.RegionList),
     document.getElementById('content')
