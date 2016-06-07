@@ -11,7 +11,7 @@ App.prototype.onReactJsLoaded = function() {
   
   this.Region = React.createClass({displayName: 'Region',
     render: function() {
-      return React.createElement('div', {className: 'Region'}, this.props.name)
+      return React.createElement('div', {className: 'Region'}, this.props.name);
     }
   });
 
@@ -24,12 +24,33 @@ App.prototype.onReactJsLoaded = function() {
     },
 
     getInitialState: function() {
-      var data = [
-        {id: 1, name: 'region 1'},
-        {id: 2, name: 'region 2'},
-        {id: 3, name: 'region 3'}
-      ];
+      var data = [];
       return {data: data};
+    },
+
+    componentDidMount: function() {
+      var selectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds();
+      var onNext = function(model) {
+        this.setState(function(state, props) {
+          var newData = state.data.slice(0);
+          newData.push({
+            id: model.id,
+            name: model.name
+          });
+          return {data: newData};
+        });
+      }.bind(this);
+
+      // TODO create component to contain a RegionList, progress spinner and an error display, and pass on onError to RegionModel.find.
+      var onError = function(errors) {
+        console.error(errors);
+      };
+
+      // TODO hide loading spinner or something
+      var onCompleted = function() {
+      };
+
+      RegionModel.find(selectedRegionIds, onNext, onError, onCompleted);
     }
   });
 };

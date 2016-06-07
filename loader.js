@@ -14,10 +14,11 @@ var Loader = function(onEverythingLoadedFn) {
   this._isReactJsLoaded = false;
   this._isAppJsLoaded = false;
   this._isServiceJsLoaded = false;
+  this._isRegionModelJsLoaded = false;
 };
 
 Loader.prototype._isEverythingLoaded = function() {
-  return this._isDomLoaded && this._isReactJsLoaded && this._isAppJsLoaded && this._isServiceJsLoaded;
+  return this._isDomLoaded && this._isReactJsLoaded && this._isAppJsLoaded && this._isServiceJsLoaded && this._isRegionModelJsLoaded && this._regionSelectionJsLoaded;
 };
 
 Loader.prototype._checkEverythingLoaded = function() {
@@ -47,6 +48,16 @@ Loader.prototype.onServiceJsLoaded = function() {
   this._checkEverythingLoaded();
 };
 
+Loader.prototype.onRegionModelJsLoaded = function() {
+  this._isRegionModelJsLoaded = true;
+  this._checkEverythingLoaded();
+};
+
+Loader.prototype.onRegionSelectionJsLoaded = function() {
+  this._regionSelectionJsLoaded = true;
+  this._checkEverythingLoaded();
+};
+
 Loader.prototype.importScript = (function (oHead) {
   function loadError (oError) {
     throw new URIError('The script ' + oError.target.src + ' is not accessible.');
@@ -73,20 +84,10 @@ Loader.getInstance = function() {
 
 var loader = Loader.getInstance();
 
-document.addEventListener('DOMContentLoaded', function() {
-  loader.onDomLoadeded();
-});
+document.addEventListener('DOMContentLoaded', loader.onDomLoadeded.bind(loader));
 
-loader.importScript(REACT_JS, function() {
-  loader.importScript(REACT_DOM_JS, function () {
-    loader.onReactJsLoaded();
-  });
-});
-
-loader.importScript('app.js', function() {
-  loader.onAppJsLoadeded();
-});
-
-loader.importScript('service.js', function() {
-  loader.onServiceJsLoaded();
-});
+loader.importScript(REACT_JS, loader.importScript.bind(loader, REACT_DOM_JS, loader.onReactJsLoaded.bind(loader)));
+loader.importScript('app.js', loader.onAppJsLoadeded.bind(loader));
+loader.importScript('service.js', loader.onServiceJsLoaded.bind(loader));
+loader.importScript('region_model.js', loader.onRegionModelJsLoaded.bind(loader));
+loader.importScript('region_selection.js', loader.onRegionSelectionJsLoaded.bind(loader));

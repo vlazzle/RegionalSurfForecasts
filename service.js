@@ -12,25 +12,33 @@ RegionReportFetcher.prototype.fetch = function(onSuccess, onError) {
         if (req.status < 400) {
             // TODO instead of parsing the entire response, use https://github.com/dscape/clarinet
             var resp = req.response;
-            
-            console.group(resp.Location.subregionalias);
-            console.log(resp);
 
             if ('Analysis' in resp && 'generalCondition' in resp.Analysis) {
+                var id = resp.id;
                 var conditions = resp.Analysis.generalCondition.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
-                
-                console.log(resp._metadata.canonicalUrl);
+                var alias = resp.Location.subregionalias;
+                var url = resp._metadata.canonicalUrl;
 
-                console.groupEnd(resp.Location.subregionalias);
+                console.group(alias);
+                console.log(resp);
+                console.log(id);
+                console.log(conditions);
+                console.log(url);
+
+                console.groupEnd(alias);
                 
-                onSuccess(conditions);
+                var model = new RegionModel(id, conditions, alias, url);
+                onSuccess(model);
             } else {
-                console.error('error: unexpected structure in response JSON');
-                onError();
+                var error = 'error: unexpected structure in response JSON';
+                console.error(error);
+                onError(error);
             }
         } else {
-            console.error('error (' + req.status + ') : ' + req.statusText + ' @ ' + req.responseURL);
-            onError();
+            // TODO handle recoverable errors with retry & exponential backoff
+            var error = 'error (' + req.status + ') : ' + req.statusText + ' @ ' + req.responseURL;
+            console.error(error);
+            onError(error);
         }
     };
     xhr.open('GET', this._url);
