@@ -37,6 +37,7 @@ RegionReportFetcher.prototype.fetch = function(onSuccess, onError) {
     xhr.send(null);
 };
 
+// TODO: these shouldn't be side effects of loading this code
 RegionReportFetcher.instances = [new RegionReportFetcher('2957'), new RegionReportFetcher('2950')];
 
 RegionReportFetcher.instances.forEach(function(fetcher) {

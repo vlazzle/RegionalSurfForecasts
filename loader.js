@@ -33,7 +33,7 @@ Loader.prototype.onAppJsLoadeded = function() {
 Loader.prototype.onReactJsLoaded = function() {
   console.log("onReactJsLoaded");
   this._isReactJsLoaded = true;
-  App.instance.onReactDomLoaded();
+  App.getInstance().onReactDomLoaded();
   this._fireWhenReady();
 };
 
@@ -59,23 +59,28 @@ Loader.prototype.importScript = (function (oHead) {
 
 })(document.head || document.getElementsByTagName("head")[0]);
 
-Loader.instance = new Loader(function() {
-  App.instance.onReady();
-});
+Loader.getInstance = function() {
+  if (!Loader._instance) {
+    Loader._instance = new Loader(function() {
+      App.getInstance().onReady();
+    });
+  }
+  return Loader._instance;
+};
 
 document.addEventListener("DOMContentLoaded", function() {
-  Loader.instance.onDomLoadeded();
+  Loader.getInstance().onDomLoadeded();
 });
 
-
-Loader.instance.importScript("app.js", function () {
-  Loader.instance.onAppJsLoadeded();
+var loader = Loader.getInstance();
+loader.importScript("app.js", function () {
+  loader.onAppJsLoadeded();
 });
 
-Loader.instance.importScript(REACT_JS, function () {
-  Loader.instance.importScript(REACT_DOM_JS, function () {
-    Loader.instance.onReactJsLoaded();
+loader.importScript(REACT_JS, function () {
+  loader.importScript(REACT_DOM_JS, function () {
+    loader.onReactJsLoaded();
   });
 });
 
-Loader.instance.importScript("service.js");
+loader.importScript("service.js");
