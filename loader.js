@@ -13,12 +13,12 @@ var Loader = function(onEverythingLoadedFn) {
   this._isDomLoaded = false;
   this._isReactJsLoaded = false;
   this._isAppJsLoaded = false;
-  this._isServiceJsLoaded = false;
+  this._isRegionReportFetcherJsLoaded = false;
   this._isRegionModelJsLoaded = false;
 };
 
 Loader.prototype._isEverythingLoaded = function() {
-  return this._isDomLoaded && this._isReactJsLoaded && this._isAppJsLoaded && this._isServiceJsLoaded && this._isRegionModelJsLoaded && this._regionSelectionJsLoaded;
+  return this._isDomLoaded && this._isReactJsLoaded && this._isAppJsLoaded && this._isRegionReportFetcherJsLoaded && this._isRegionModelJsLoaded && this._regionSelectionJsLoaded;
 };
 
 Loader.prototype._checkEverythingLoaded = function() {
@@ -43,8 +43,8 @@ Loader.prototype.onAppJsLoadeded = function() {
   this._checkEverythingLoaded();
 };
 
-Loader.prototype.onServiceJsLoaded = function() {
-  this._isServiceJsLoaded = true;
+Loader.prototype.onRegionReportFetcherJsLoaded = function() {
+  this._isRegionReportFetcherJsLoaded = true;
   this._checkEverythingLoaded();
 };
 
@@ -88,6 +88,6 @@ document.addEventListener('DOMContentLoaded', loader.onDomLoadeded.bind(loader))
 
 loader.importScript(REACT_JS, loader.importScript.bind(loader, REACT_DOM_JS, loader.onReactJsLoaded.bind(loader)));
 loader.importScript('app.js', loader.onAppJsLoadeded.bind(loader));
-loader.importScript('service.js', loader.onServiceJsLoaded.bind(loader));
+loader.importScript('region_report_fetcher.js', loader.onRegionReportFetcherJsLoaded.bind(loader));
 loader.importScript('region_model.js', loader.onRegionModelJsLoaded.bind(loader));
 loader.importScript('region_selection.js', loader.onRegionSelectionJsLoaded.bind(loader));
