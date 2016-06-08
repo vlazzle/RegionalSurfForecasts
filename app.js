@@ -9,16 +9,25 @@ App.getInstance = function() {
 App.prototype.onReactJsLoaded = function() {
   App.Region = React.createClass({displayName: 'Region',
     render: function() {
-      return React.createElement('div', {className: 'Region'}, this.props.name);
+      var nameCol = React.createElement('td', null, this.props.name);
+      var conditionsCols = this.props.conditions.map(function(day, i) {
+        return React.createElement('td', {key: i}, day);
+      });
+      return React.createElement('tr', {className: 'Region'}, nameCol, conditionsCols);
     }
   });
 
   App.RegionList = React.createClass({displayName: 'RegionList',
     render: function() {
       var regionNodes = this.props.data.map(function(region) {
-        return React.createElement(App.Region, {name: region.name, key: region.id});
+        return React.createElement(App.Region, {
+          key: region.id,
+          name: region.name,
+          conditions: region.conditions
+        });
       });
-      return React.createElement('div', {className: 'RegionList'}, regionNodes);
+      return React.createElement('div', {className: 'RegionList'},
+        React.createElement('table', null, React.createElement('tbody', null, regionNodes)));
     }
   });
 
@@ -63,7 +72,8 @@ App.prototype.onReactJsLoaded = function() {
         this.setState(function(state, props) {
           var newDatum = {
             id: model.id,
-            name: model.name
+            name: model.name,
+            conditions: model.conditions
           };
           return {data: state.data.concat([newDatum])};
         });
