@@ -9,3 +9,12 @@
 body {
   font-family: helvetica, arial, sans-serif;
 }
+
+.RegionList table {
+  width: 100%;
+  max-width: 1100px;
+}
+
+.RegionList th {
+  text-align: left;
+}
