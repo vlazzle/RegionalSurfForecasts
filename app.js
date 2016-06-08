@@ -19,11 +19,11 @@ App.prototype.onReactJsLoaded = function() {
 
   App.TableHeader = React.createClass({displayName: 'TableHeader',
     render: function() {
-      var colHeaders = this.props.days.map(function(day) {
+      var colHeaders = this.props.days.map(function(day, i) {
         var headerText = this._toDayAbbrev(day.getDay()) + " " + day.getDate();
-        return React.createElement('th', null, headerText);
+        return React.createElement('th', {key: i + 1}, headerText);
       }.bind(this));
-      var blankColheader = React.createElement('th');
+      var blankColheader = React.createElement('th', {key: 0});
       colHeaders.unshift(blankColheader);
       return React.createElement('thead', null,
         React.createElement('tr', null, colHeaders));
