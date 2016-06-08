@@ -8,12 +8,12 @@ var RegionModel = function(id, conditions, alias, url) {
 RegionModel.find = function(ids, onNext, onError, onCompleted) {
   var successes = 0;
   var errors = [];
-  var onSuccess = function(model) {
+  var successFn = function(model) {
     onNext(model);
     successes++;
     checkDone();
   };
-  var onError = function(error) {
+  var errorFn = function(error) {
     errors.push(error);
     checkDone();
   };
@@ -29,6 +29,6 @@ RegionModel.find = function(ids, onNext, onError, onCompleted) {
   
   ids.forEach(function(id) {
     var fetcher = new RegionReportFetcher(id);
-    fetcher.fetch(onSuccess, onError);
+    fetcher.fetch(successFn, errorFn);
   });
 };

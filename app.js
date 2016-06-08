@@ -22,16 +22,27 @@ App.prototype.onReactJsLoaded = function() {
     }
   });
 
-  // TODO progress spinner & error display, and pass on onError to RegionModel.find.
+  App.ErrorList = React.createClass({displayName: 'ErrorList',
+    render: function() {
+      var errorNodes = this.props.errors.map(function(error) {
+        return React.createElement('p', {className: 'error', key: error}, error);
+      });
+      return React.createElement('div', {className: 'ErrorList'}, errorNodes);
+    }
+  });
+
+  // TODO progress spinner
   App.MultiRegionForecast = React.createClass({displayName: 'MultiRegionForecast',
     render: function() {
       var regionList = React.createElement(App.RegionList, {data: this.state.data});
-      return regionList;
+      var errorList = React.createElement(App.ErrorList, {errors: this.state.errors});
+      return React.createElement('div', {className: 'MultiRegionForecast'}, errorList, regionList);
     },
 
     getInitialState: function() {
       var data = [];
-      return {data: data};
+      var errors = []
+      return {data: data, errors: errors};
     },
 
     componentDidMount: function() {
@@ -50,7 +61,8 @@ App.prototype.onReactJsLoaded = function() {
 
       var onError = function(errors) {
         console.error(errors);
-      };
+        this.setState({errors: errors});
+      }.bind(this);
 
       // TODO hide loading spinner or something
       var onCompleted = function() {
