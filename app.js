@@ -15,10 +15,18 @@ App.prototype.onReactJsLoaded = function() {
 
   App.RegionList = React.createClass({displayName: 'RegionList',
     render: function() {
-      var regionNodes = this.state.data.map(function(region) {
+      var regionNodes = this.props.data.map(function(region) {
         return React.createElement(App.Region, {name: region.name, key: region.id});
       });
       return React.createElement('div', {className: 'RegionList'}, regionNodes);
+    }
+  });
+
+  // TODO progress spinner & error display, and pass on onError to RegionModel.find.
+  App.MultiRegionForecast = React.createClass({displayName: 'MultiRegionForecast',
+    render: function() {
+      var regionList = React.createElement(App.RegionList, {data: this.state.data});
+      return regionList;
     },
 
     getInitialState: function() {
@@ -30,6 +38,7 @@ App.prototype.onReactJsLoaded = function() {
       var selectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds();
       var onNext = function(model) {
         this.setState(function(state, props) {
+          // TODO http://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-reactjs
           var newData = state.data.slice(0);
           newData.push({
             id: model.id,
@@ -39,7 +48,6 @@ App.prototype.onReactJsLoaded = function() {
         });
       }.bind(this);
 
-      // TODO create component to contain a RegionList, progress spinner and an error display, and pass on onError to RegionModel.find.
       var onError = function(errors) {
         console.error(errors);
       };
@@ -55,7 +63,7 @@ App.prototype.onReactJsLoaded = function() {
 
 App.prototype.onEverythingLoaded = function() {
   ReactDOM.render(
-    React.createElement(App.RegionList),
+    React.createElement(App.MultiRegionForecast),
     document.getElementById('content')
   );
 };
