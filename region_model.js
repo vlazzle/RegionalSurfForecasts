@@ -1,4 +1,17 @@
 var RegionModel = function(id, conditions, name, url) {
+  if (!id) {
+    throw 'missing id';
+  }
+  if (!conditions) {
+    throw 'missing conditions';
+  }
+  if (!name) {
+    throw 'missing name';
+  }
+  if (!url) {
+    throw 'missing url';
+  }
+
   this.id = id;
   this.conditions = conditions;
   this.name = name;

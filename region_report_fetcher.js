@@ -27,8 +27,12 @@ RegionReportFetcher.prototype.fetch = function(onSuccess, onError) {
 
                 console.groupEnd(name);
                 
-                var model = new RegionModel(id, conditions, name, url);
-                onSuccess(model);
+                try {
+                    var model = new RegionModel(id, conditions, name, url);
+                    onSuccess(model);
+                } catch (e) {
+                    onError(e);
+                }
             } else {
                 var error = 'error: unexpected structure in response JSON';
                 console.error(error);
