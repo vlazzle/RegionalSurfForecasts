@@ -31,18 +31,30 @@ App.prototype.onReactJsLoaded = function() {
     }
   });
 
-  // TODO progress spinner
+  App.LoadingIndicator = React.createClass({displayName: 'LoadingIndicator',
+    render: function() {
+      return React.createElement('p', {className: this._getClassNames()}, 'loading...');
+    },
+
+    _getClassNames: function() {
+      var classNames = ['LoadingIndicator']
+      if (!this.props.isLoading) {
+        classNames.push('hidden');
+      }
+      return classNames.join(' ');
+    }
+  });
+
   App.MultiRegionForecast = React.createClass({displayName: 'MultiRegionForecast',
     render: function() {
       var regionList = React.createElement(App.RegionList, {data: this.state.data});
       var errorList = React.createElement(App.ErrorList, {errors: this.state.errors});
-      return React.createElement('div', {className: 'MultiRegionForecast'}, errorList, regionList);
+      var loadingIndicator = React.createElement(App.LoadingIndicator, {isLoading: this.state.isLoading});
+      return React.createElement('div', {className: 'MultiRegionForecast'}, loadingIndicator, errorList, regionList);
     },
 
     getInitialState: function() {
-      var data = [];
-      var errors = []
-      return {data: data, errors: errors};
+      return {data: [], errors: [], isLoading: false};
     },
 
     componentDidMount: function() {
@@ -62,10 +74,11 @@ App.prototype.onReactJsLoaded = function() {
         this.setState({errors: errors});
       }.bind(this);
 
-      // TODO hide loading spinner or something
       var onCompleted = function() {
-      };
+        this.setState({isLoading: false});
+      }.bind(this);
 
+      this.setState({isLoading: true});
       RegionModel.find(selectedRegionIds, onNext, onError, onCompleted);
     }
   });
