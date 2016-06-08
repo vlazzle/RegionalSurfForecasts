@@ -1,4 +1,4 @@
-var RegionModel = function(id, name, conditions, url) {
+var RegionModel = function(id, name, conditions, url, startDate) {
   if (!id) {
     throw 'missing id';
   }
@@ -11,11 +11,22 @@ var RegionModel = function(id, name, conditions, url) {
   if (!url) {
     throw 'missing url for id=' + id;
   }
+  if (!startDate) {
+    throw 'missing startDate for id=' + id;
+  }
 
   this.id = id;
   this.conditions = conditions;
   this.name = name;
   this.url = url;
+
+  var dayZero = new Date(startDate);
+  var oneDayInMs = 1000 * 60 * 60 * 24;
+  this.days = [];
+  var day = dayZero;
+  for (var i = 0; i < conditions.length; i++) {
+    this.days.push(new Date(dayZero.getTime() + i * oneDayInMs));
+  }
 };
 
 RegionModel.find = function(ids, onNext, onError, onCompleted) {

@@ -17,6 +17,32 @@ App.prototype.onReactJsLoaded = function() {
     }
   });
 
+  App.TableHeader = React.createClass({displayName: 'TableHeader',
+    render: function() {
+      var colHeaders = this.props.days.map(function(day) {
+        var headerText = this._toDayAbbrev(day.getDay()) + " " + day.getDate();
+        return React.createElement('th', null, headerText);
+      }.bind(this));
+      var blankColheader = React.createElement('th');
+      colHeaders.unshift(blankColheader);
+      return React.createElement('thead', null,
+        React.createElement('tr', null, colHeaders));
+    },
+
+    _toDayAbbrev: function(dayNum) {
+      var dayNames = [
+        'Sun',
+        'Mon',
+        'Tue',
+        'Wed',
+        'Thu',
+        'Fri',
+        'Sat'
+      ];
+      return dayNames[dayNum];
+    }
+  });
+
   App.RegionList = React.createClass({displayName: 'RegionList',
     render: function() {
       var regionNodes = this.props.data.map(function(region) {
@@ -26,8 +52,11 @@ App.prototype.onReactJsLoaded = function() {
           conditions: region.conditions
         });
       });
+      var maybeHeader = this.props.data.length > 0
+        ? React.createElement(App.TableHeader, {days : this.props.data[0].days})
+        : null;
       return React.createElement('div', {className: 'RegionList'},
-        React.createElement('table', null, React.createElement('tbody', null, regionNodes)));
+        React.createElement('table', null, maybeHeader, React.createElement('tbody', null, regionNodes)));
     }
   });
 
@@ -73,7 +102,8 @@ App.prototype.onReactJsLoaded = function() {
           var newDatum = {
             id: model.id,
             name: model.name,
-            conditions: model.conditions
+            conditions: model.conditions,
+            days: model.days
           };
           return {data: state.data.concat([newDatum])};
         });

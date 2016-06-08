@@ -18,17 +18,19 @@ RegionReportFetcher.prototype.fetch = function(onSuccess, onError) {
                 var name = resp.name;
                 var conditions = resp.Analysis.generalCondition.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
                 var url = resp._metadata.canonicalUrl;
+                var startDate = resp.Analysis.startDate_pretty_LOCAL;
 
                 console.group(name);
                 console.log(resp);
                 console.log(id);
                 console.log(conditions);
                 console.log(url);
+                console.log(startDate);
 
                 console.groupEnd(name);
                 
                 try {
-                    var model = new RegionModel(id, name, conditions, url);
+                    var model = new RegionModel(id, name, conditions, url, startDate);
                     onSuccess(model);
                 } catch (e) {
                     onError(e);
