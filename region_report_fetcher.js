@@ -15,8 +15,8 @@ RegionReportFetcher.prototype.fetch = function(onSuccess, onError) {
 
             if ('Analysis' in resp && 'generalCondition' in resp.Analysis) {
                 var id = resp.id;
-                var conditions = resp.Analysis.generalCondition.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
                 var name = resp.name;
+                var conditions = resp.Analysis.generalCondition.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
                 var url = resp._metadata.canonicalUrl;
 
                 console.group(name);
@@ -28,7 +28,7 @@ RegionReportFetcher.prototype.fetch = function(onSuccess, onError) {
                 console.groupEnd(name);
                 
                 try {
-                    var model = new RegionModel(id, conditions, name, url);
+                    var model = new RegionModel(id, name, conditions, url);
                     onSuccess(model);
                 } catch (e) {
                     onError(e);
