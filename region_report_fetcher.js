@@ -16,18 +16,18 @@ RegionReportFetcher.prototype.fetch = function(onSuccess, onError) {
             if ('Analysis' in resp && 'generalCondition' in resp.Analysis) {
                 var id = resp.id;
                 var conditions = resp.Analysis.generalCondition.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
-                var alias = resp.Location.subregionalias;
+                var name = resp.name;
                 var url = resp._metadata.canonicalUrl;
 
-                console.group(alias);
+                console.group(name);
                 console.log(resp);
                 console.log(id);
                 console.log(conditions);
                 console.log(url);
 
-                console.groupEnd(alias);
+                console.groupEnd(name);
                 
-                var model = new RegionModel(id, conditions, alias, url);
+                var model = new RegionModel(id, conditions, name, url);
                 onSuccess(model);
             } else {
                 var error = 'error: unexpected structure in response JSON';

@@ -1,7 +1,7 @@
-var RegionModel = function(id, conditions, alias, url) {
+var RegionModel = function(id, conditions, name, url) {
   this.id = id;
   this.conditions = conditions;
-  this.name = alias;
+  this.name = name;
   this.url = url;
 };
 
