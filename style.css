@@ -18,3 +18,30 @@ body {
 .RegionList th {
   text-align: left;
 }
+
+.ConditionSquare {
+  width: 11px;
+  height: 11px;
+  margin: 5px;
+  float: left;
+}
+
+.c_flat {
+  background-color: #555;
+}
+
+.c_poor, .c_poor_to_fair {
+  background-color: #39f;
+}
+
+.c_fair, .c_fair_to_good {
+  background-color: #0c0;
+}
+
+.c_good, .c_good_to_epic {
+  background-color: #f90;
+}
+
+.c_epic {
+  background-color: #f00;
+}

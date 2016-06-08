@@ -11,9 +11,17 @@ App.prototype.onReactJsLoaded = function() {
     render: function() {
       var nameCol = React.createElement('td', null, this.props.name);
       var conditionsCols = this.props.conditions.map(function(day, i) {
-        return React.createElement('td', {key: i}, day);
-      });
+        return React.createElement('td', {key: i},
+          React.createElement('div', {className: this._getClassNames(day)}),
+          day);
+      }.bind(this));
       return React.createElement('tr', {className: 'Region'}, nameCol, conditionsCols);
+    },
+
+    _getClassNames: function(conditions) {
+      var classNames = ['ConditionSquare'];
+      classNames.push('c_' + conditions.replace(/ /g, '_'));
+      return classNames.join(' ');
     }
   });
 
