@@ -49,13 +49,11 @@ App.prototype.onReactJsLoaded = function() {
       var selectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds();
       var onNext = function(model) {
         this.setState(function(state, props) {
-          // TODO http://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-reactjs
-          var newData = state.data.slice(0);
-          newData.push({
+          var newDatum = {
             id: model.id,
             name: model.name
-          });
-          return {data: newData};
+          };
+          return {data: state.data.concat([newDatum])};
         });
       }.bind(this);
 
