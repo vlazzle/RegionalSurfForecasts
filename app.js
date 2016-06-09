@@ -4,7 +4,20 @@ App.getInstance = function() {
     App._instance = new App();
   }
   return App._instance;
-}
+};
+
+App._SUGGESTED_REGION_IDS = [
+  // SF-San Mateo County
+  '2957',
+  // Santa Cruz
+  '2958',
+  // North Los Angeles
+  '2142',
+  // South Los Angeles
+  '2951',
+  // South Orange County
+  '2950'
+];
 
 App.prototype.onReactJsLoaded = function() {
 
@@ -120,20 +133,111 @@ App.prototype.onReactJsLoaded = function() {
     }
   });
 
+  App.RegionSelector = React.createClass({displayName: 'RegionSelector',
+    propTypes: {
+      selectableRegions: React.PropTypes.arrayOf(React.PropTypes.shape({
+        regionId: React.PropTypes.string.isRequired,
+        isSelected: React.PropTypes.bool
+      }).isRequired).isRequired,
+      onChangeRegionSelection: React.PropTypes.func.isRequired
+    },
+
+    render: function() {
+      var checkboxes = this.props.selectableRegions.map(function(selectableRegion) {
+        return React.createElement(App.RegionToggle, {
+          key: selectableRegion.regionId,
+          regionId: selectableRegion.regionId,
+          isSelectedInitially: selectableRegion.isSelected,
+          onRegionsSelected: this.handleSelectRegion,
+          onRegionsDeselected: this.handleDeselectRegion
+        });
+      }.bind(this));
+      return React.createElement('div', {className: 'RegionSelector'}, checkboxes);
+    },
+
+    handleSelectRegion: function(regionId) {
+      RegionSelection.getInstance().addSelectedRegionId(regionId);
+      this.props.onChangeRegionSelection();
+    },
+
+    handleDeselectRegion: function(regionId) {
+      RegionSelection.getInstance().removeSelectedRegionId(regionId);
+      this.props.onChangeRegionSelection();
+    }
+  });
+
+  App.RegionToggle = React.createClass({displayName: 'RegionToggle',
+    propTypes: {
+      regionId: React.PropTypes.string.isRequired,
+      isSelectedInitially: React.PropTypes.bool,
+      onRegionsSelected: React.PropTypes.func.isRequired,
+      onRegionsDeselected: React.PropTypes.func.isRequired
+    },
+
+    getInitialState: function() {
+      return {
+        isSelected: this.props.isSelectedInitially
+      }
+    },
+
+    handleChange: function() {
+      // TODO update url with pushState
+      var isSelectedNow = !this.state.isSelected;
+      if (isSelectedNow) {
+        this.props.onRegionsSelected(this.props.regionId);
+      } else {
+        this.props.onRegionsDeselected(this.props.regionId);
+      }
+      this.setState({isSelected: isSelectedNow});
+    },
+
+    render: function() {
+      var htmlId = 'rt_' + this.props.regionId;
+      return React.createElement('div', {className: 'RegionToggle'},
+        React.createElement('input', {
+          type: 'checkbox',
+          name: this.props.regionId,
+          checked: this.state.isSelected,
+          onChange: this.handleChange,
+          id: htmlId
+        }),
+        // TODO label with region name
+        React.createElement('label', {htmlFor: htmlId}, htmlId)
+      );
+    }
+  });
+
   App.MultiRegionForecast = React.createClass({displayName: 'MultiRegionForecast',
     render: function() {
       var regionList = React.createElement(App.RegionList, {data: this.state.data});
       var errorList = React.createElement(App.ErrorList, {errors: this.state.errors});
       var loadingIndicator = React.createElement(App.LoadingIndicator, {isLoading: this.state.isLoading});
-      return React.createElement('div', {className: 'MultiRegionForecast'}, loadingIndicator, errorList, regionList);
+      var regionSelector = React.createElement(App.RegionSelector, {
+        selectableRegions: this._getSelectableRegions(),
+        onChangeRegionSelection: this.handleChangeRegionSelection
+      });
+      return React.createElement('div', {className: 'MultiRegionForecast'},
+        loadingIndicator, regionSelector, errorList, regionList);
     },
 
     getInitialState: function() {
-      return {data: [], errors: [], isLoading: false};
+      return {
+        data: [],
+        errors: [],
+        isLoading: false,
+        selectedRegionIds: []
+      };
     },
 
     componentDidMount: function() {
-      var selectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds();
+      this._addRegions(RegionSelection.getInstance().getSelectedRegionIds());
+    },
+
+    _addRegions: function(regionIds) {
+      if (regionIds.length == 0) {
+        return;
+      }
+      
       var onNext = function(model) {
         this.setState(function(state, props) {
           var newDatum = {
@@ -142,7 +246,10 @@ App.prototype.onReactJsLoaded = function() {
             conditions: model.conditions,
             days: model.days
           };
-          return {data: state.data.concat([newDatum])};
+          return {
+            data: state.data.concat([newDatum]),
+            selectedRegionIds: state.selectedRegionIds.concat([newDatum.id])
+          };
         });
       }.bind(this);
 
@@ -156,7 +263,57 @@ App.prototype.onReactJsLoaded = function() {
       }.bind(this);
 
       this.setState({isLoading: true});
-      RegionModel.find(selectedRegionIds, onNext, onError, onCompleted);
+
+      // TODO abort this request in componentWillUnmount
+      RegionModel.find(regionIds, onNext, onError, onCompleted);
+    },
+
+    handleChangeRegionSelection: function() {
+      var newSelectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds();
+      
+      var regionIdsToAdd = newSelectedRegionIds.filter(function(id) {
+        return -1 === this.state.selectedRegionIds.indexOf(id);
+      }.bind(this));
+      this._addRegions(regionIdsToAdd);
+
+      this.setState(function(state, props) {
+        var remainingIds = state.selectedRegionIds.filter(function(id) {
+          return -1 !== newSelectedRegionIds.indexOf(id);
+        });
+        var remainingData = state.data.filter((function(datum) {
+          return -1 !== newSelectedRegionIds.indexOf(datum.id);
+        }));
+        return {
+          selectedRegionIds: remainingIds,
+          data: remainingData
+        };
+      });
+    },
+
+    _getSelectableRegions: function() {
+      var selectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds().slice();
+      
+      // First, add all regions in App._SUGGESTED_REGION_IDS while also removing each of these from selectedRegionIds.
+      var regions = App._SUGGESTED_REGION_IDS.map(function(regionId) {
+        var index = selectedRegionIds.indexOf(regionId);
+        if (-1 !== index) {
+          selectedRegionIds.splice(index, 1);
+        }
+        return {
+          isSelected: -1 !== index,
+          regionId: regionId
+        };
+      });
+
+      // Add remaining regions. These aren't in App._SUGGESTED_REGION_IDS, rather, they're specified in the URL.
+      regions = regions.concat(selectedRegionIds.map(function(regionId) {
+        return {
+          isSelected: true,
+          regionId: regionId
+        };
+      }));
+      
+      return regions;
     }
   });
 };
