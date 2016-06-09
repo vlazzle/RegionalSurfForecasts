@@ -7,7 +7,13 @@ App.getInstance = function() {
 }
 
 App.prototype.onReactJsLoaded = function() {
+
   App.Region = React.createClass({displayName: 'Region',
+    propTypes: {
+      name: React.PropTypes.string.isRequired,
+      conditions: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired
+    },
+
     render: function() {
       var nameCol = React.createElement('td', null, this.props.name);
       var conditionsCols = this.props.conditions.map(function(day, i) {
@@ -26,6 +32,13 @@ App.prototype.onReactJsLoaded = function() {
   });
 
   App.TableHeader = React.createClass({displayName: 'TableHeader',
+    propTypes: {
+      days: React.PropTypes.arrayOf(React.PropTypes.shape({
+          getDay: React.PropTypes.func.isRequired,
+          getDate: React.PropTypes.func.isRequired
+        }).isRequired).isRequired
+    },
+
     render: function() {
       var colHeaders = this.props.days.map(function(day, i) {
         var headerText = this._toDayAbbrev(day.getDay()) + " " + day.getDate();
@@ -52,6 +65,14 @@ App.prototype.onReactJsLoaded = function() {
   });
 
   App.RegionList = React.createClass({displayName: 'RegionList',
+    propTypes: {
+      data: React.PropTypes.arrayOf(React.PropTypes.shape({
+          id: React.PropTypes.string.isRequired,
+          name: React.PropTypes.string.isRequired,
+          conditions: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired
+        }).isRequired).isRequired
+    },
+
     render: function() {
       var regionNodes = this.props.data.map(function(region) {
         return React.createElement(App.Region, {
@@ -69,6 +90,10 @@ App.prototype.onReactJsLoaded = function() {
   });
 
   App.ErrorList = React.createClass({displayName: 'ErrorList',
+    propTypes: {
+      errors: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired
+    },
+
     render: function() {
       var errorNodes = this.props.errors.map(function(error) {
         return React.createElement('p', {className: 'error', key: error}, error);
@@ -78,6 +103,10 @@ App.prototype.onReactJsLoaded = function() {
   });
 
   App.LoadingIndicator = React.createClass({displayName: 'LoadingIndicator',
+    propTypes: {
+      isLoading: React.PropTypes.bool
+    },
+
     render: function() {
       return React.createElement('p', {className: this._getClassNames()}, 'loading...');
     },
