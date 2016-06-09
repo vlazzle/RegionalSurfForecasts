@@ -24,11 +24,13 @@ App.prototype.onReactJsLoaded = function() {
   App.Region = React.createClass({displayName: 'Region',
     propTypes: {
       name: React.PropTypes.string.isRequired,
-      conditions: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired
+      conditions: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired,
+      url: React.PropTypes.string.isRequired
     },
 
     render: function() {
-      var nameCol = React.createElement('td', null, this.props.name);
+      var nameCol = React.createElement('td', null,
+        React.createElement('a', {href: this.props.url}, this.props.name));
       var conditionsCols = this.props.conditions.map(function(day, i) {
         return React.createElement('td', {key: i},
           React.createElement('div', {className: this._getClassNames(day)}),
@@ -91,7 +93,8 @@ App.prototype.onReactJsLoaded = function() {
         return React.createElement(App.Region, {
           key: region.id,
           name: region.name,
-          conditions: region.conditions
+          conditions: region.conditions,
+          url: region.url
         });
       });
       var maybeHeader = this.props.data.length > 0
@@ -244,7 +247,8 @@ App.prototype.onReactJsLoaded = function() {
             id: model.id,
             name: model.name,
             conditions: model.conditions,
-            days: model.days
+            days: model.days,
+            url: model.url
           };
           return {
             data: state.data.concat([newDatum]),
