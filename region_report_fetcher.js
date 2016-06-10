@@ -12,6 +12,10 @@ RegionReportFetcher.onload = function(onSuccess, onError, json) {
         var id = resp.id;
         var name = resp.name;
         var conditions = resp.Analysis.generalCondition.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
+        var surfMin = resp.Analysis.surfMin.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
+        var surfMax = resp.Analysis.surfMax.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
+        var surfPeak = resp.Analysis.surfPeak.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
+        var canExceed = resp.Analysis.canExceed.slice(0, NUM_AVAILABLE_DAYS_OF_CONDITIONS);
         var url = resp._metadata.canonicalUrl;
         var startDate = resp.Analysis.startDate_pretty_LOCAL;
 
@@ -25,7 +29,7 @@ RegionReportFetcher.onload = function(onSuccess, onError, json) {
         console.groupEnd(name);
 
         try {
-            var model = new RegionModel(id, name, conditions, url, startDate);
+            var model = new RegionModel(id, name, conditions, surfMin, surfMax, surfPeak, canExceed, url, startDate);
             onSuccess(model);
         } catch (e) {
             onError(e);

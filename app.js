@@ -28,6 +28,7 @@ App.prototype.onReactJsLoaded = function() {
     propTypes: {
       name: React.PropTypes.string.isRequired,
       conditions: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired,
+      surfQuant: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired,
       url: React.PropTypes.string.isRequired
     },
 
@@ -37,7 +38,7 @@ App.prototype.onReactJsLoaded = function() {
       var conditionsCols = this.props.conditions.map(function(day, i) {
         return React.createElement('td', {key: i},
           React.createElement('div', {className: this._getClassNames(day)}),
-          day);
+          day + ' ' + this.props.surfQuant[i]);
       }.bind(this));
       return React.createElement('tr', {className: 'Region'}, nameCol, conditionsCols);
     },
@@ -87,7 +88,8 @@ App.prototype.onReactJsLoaded = function() {
       data: React.PropTypes.arrayOf(React.PropTypes.shape({
           id: React.PropTypes.string.isRequired,
           name: React.PropTypes.string.isRequired,
-          conditions: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired
+          conditions: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired,
+          surfQuant: React.PropTypes.arrayOf(React.PropTypes.string.isRequired).isRequired
         }).isRequired).isRequired
     },
 
@@ -97,6 +99,7 @@ App.prototype.onReactJsLoaded = function() {
           key: region.id,
           name: region.name,
           conditions: region.conditions,
+          surfQuant: region.surfQuant,
           url: region.url
         });
       });
@@ -289,6 +292,7 @@ App.prototype.onReactJsLoaded = function() {
             id: model.id,
             name: model.name,
             conditions: model.conditions,
+            surfQuant: model.getSurfQuant(),
             days: model.days,
             url: model.url
           };

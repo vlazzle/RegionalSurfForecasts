@@ -1,4 +1,4 @@
-var RegionModel = function(id, name, conditions, url, startDate) {
+var RegionModel = function(id, name, conditions, surfMin, surfMax, surfPeak, canExceed, url, startDate) {
   if (!id) {
     throw 'missing id';
   }
@@ -7,6 +7,18 @@ var RegionModel = function(id, name, conditions, url, startDate) {
   }
   if (!conditions) {
     throw 'missing conditions for id=' + id;
+  }
+  if (!surfMin) {
+    throw 'missing surfMin for id=' + id;
+  }
+  if (!surfMax) {
+    throw 'missing surfMax for id=' + id;
+  }
+  if (!surfPeak) {
+    throw 'missing surfPeak for id=' + id;
+  }
+  if (!canExceed) {
+    throw 'missing canExceed for id=' + id;
   }
   if (!url) {
     throw 'missing url for id=' + id;
@@ -17,6 +29,10 @@ var RegionModel = function(id, name, conditions, url, startDate) {
 
   this.id = id;
   this.conditions = conditions;
+  this.surfMin = surfMin;
+  this.surfMax = surfMax;
+  this.surfPeak = surfPeak;
+  this.canExceed = canExceed;
   this.name = name;
   this.url = url;
 
@@ -50,9 +66,20 @@ RegionModel.find = function(ids, onNext, onError, onCompleted) {
       }
     }
   };
-  
+
   ids.forEach(function(id) {
     var fetcher = new RegionReportFetcher(id);
     fetcher.fetch(successFn, errorFn);
   });
+};
+
+RegionModel.prototype.getSurfQuant = function() {
+  var surfQuant = [];
+  for (var i = 0; i < this.surfPeak.length; i++) {
+    var surfPeak = Number.parseInt(this.surfPeak[i]);
+    var occPeak = surfPeak ? ' occ. ' + surfPeak : '';
+    var plus = this.canExceed[i] == 'TRUE' ? '+' : '';
+    surfQuant.push('' + this.surfMin[i] + '-' + this.surfMax[i] + 'ft' + plus + occPeak);
+  }
+  return surfQuant;
 };
