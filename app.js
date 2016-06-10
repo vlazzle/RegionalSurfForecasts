@@ -19,7 +19,7 @@ App._SUGGESTED_REGION_IDS_AND_NAMES = [
   ['2143', 'North Orange County'],
   ['2950', 'South Orange County'],
   ['2144', 'North San Diego'],
-  ['2953', 'South San Diego Forecast']
+  ['2953', 'South San Diego']
 ];
 
 App.prototype.onReactJsLoaded = function() {
