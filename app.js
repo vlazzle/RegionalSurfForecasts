@@ -150,10 +150,18 @@ App.prototype.onReactJsLoaded = function() {
           regionName: selectableRegion.regionName,
           isSelectedInitially: selectableRegion.isSelected,
           onRegionsSelected: this.handleSelectRegion,
-          onRegionsDeselected: this.handleDeselectRegion
+          onRegionsDeselected: this.handleDeselectRegion,
+          ref: this.saveChildRef.bind(this, selectableRegion.regionId)
         });
       }.bind(this));
       return React.createElement('div', {className: 'RegionSelector'}, checkboxes);
+    },
+
+    saveChildRef: function(regionId, ref) {
+      if (!this._childrenByRegionId) {
+        this._childrenByRegionId = {};
+      }
+      this._childrenByRegionId[regionId] = ref;
     },
 
     handleSelectRegion: function(regionId) {
@@ -164,9 +172,33 @@ App.prototype.onReactJsLoaded = function() {
     handleDeselectRegion: function(regionId) {
       RegionSelection.getInstance().removeSelectedRegionId(regionId);
       this.props.onChangeRegionSelection();
+    },
+
+    handlePopState: function(event) {
+      var regionSelection = RegionSelection.getInstance();
+      regionSelection.setFromUrl(event.state);
+      var selectedIds = regionSelection.getSelectedRegionIds()
+      this.props.selectableRegions.forEach(function(region) {
+        if (this._childrenByRegionId) {
+          var id = region.regionId;
+          var child = this._childrenByRegionId[id];
+          var isSelected = -1 !== selectedIds.indexOf(id);
+          child.setSelected(isSelected);
+        }
+      }.bind(this));
+    },
+
+    componentDidMount: function() {
+      window.onpopstate = this.handlePopState;
+    },
+
+    componentWillUnmount: function() {
+      window.onpopstate = null;
     }
   });
 
+  // TODO For non-suggested regions, show an X to delete the checkbox.
+  //      Keep the IDs in the url, just add something else to the url to designate they're unselected
   App.RegionToggle = React.createClass({displayName: 'RegionToggle',
     propTypes: {
       regionId: React.PropTypes.string.isRequired,
@@ -183,7 +215,6 @@ App.prototype.onReactJsLoaded = function() {
     },
 
     handleChange: function() {
-      // TODO update url with pushState
       var isSelectedNow = !this.state.isSelected;
       if (isSelectedNow) {
         this.props.onRegionsSelected(this.props.regionId);
@@ -205,6 +236,12 @@ App.prototype.onReactJsLoaded = function() {
         }),
         React.createElement('label', {htmlFor: htmlId}, this.props.regionName)
       );
+    },
+
+    setSelected: function(isSelected) {
+      if (isSelected != this.state.isSelected) {
+        this.handleChange();
+      }
     }
   });
 
