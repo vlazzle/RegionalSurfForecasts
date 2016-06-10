@@ -13,10 +13,16 @@ body {
 .RegionList table {
   width: 100%;
   max-width: 1100px;
+  border-spacing: 0;
 }
 
-.RegionList th {
+.RegionList th, td {
   text-align: left;
+  padding: 7px 0;
+}
+
+.RegionList tr:hover td {
+  background-color: #fefecf;
 }
 
 .ConditionSquare {
