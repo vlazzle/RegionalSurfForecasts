@@ -6,17 +6,13 @@ App.getInstance = function() {
   return App._instance;
 };
 
-App._SUGGESTED_REGION_IDS = [
-  // SF-San Mateo County
-  '2957',
-  // Santa Cruz
-  '2958',
-  // North Los Angeles
-  '2142',
-  // South Los Angeles
-  '2951',
-  // South Orange County
-  '2950'
+// Associate IDs with default names to use until the real true name is loaded from the server.
+App._SUGGESTED_REGION_IDS_AND_NAMES = [
+  ['2957', 'SF-San Mateo County'],
+  ['2958', 'Santa Cruz'],
+  ['2142', 'North Los Angeles'],
+  ['2951', 'South Los Angeles'],
+  ['2950', 'South Orange County']
 ];
 
 App.prototype.onReactJsLoaded = function() {
@@ -140,6 +136,7 @@ App.prototype.onReactJsLoaded = function() {
     propTypes: {
       selectableRegions: React.PropTypes.arrayOf(React.PropTypes.shape({
         regionId: React.PropTypes.string.isRequired,
+        regionName: React.PropTypes.string.isRequired,
         isSelected: React.PropTypes.bool
       }).isRequired).isRequired,
       onChangeRegionSelection: React.PropTypes.func.isRequired
@@ -150,6 +147,7 @@ App.prototype.onReactJsLoaded = function() {
         return React.createElement(App.RegionToggle, {
           key: selectableRegion.regionId,
           regionId: selectableRegion.regionId,
+          regionName: selectableRegion.regionName,
           isSelectedInitially: selectableRegion.isSelected,
           onRegionsSelected: this.handleSelectRegion,
           onRegionsDeselected: this.handleDeselectRegion
@@ -172,6 +170,7 @@ App.prototype.onReactJsLoaded = function() {
   App.RegionToggle = React.createClass({displayName: 'RegionToggle',
     propTypes: {
       regionId: React.PropTypes.string.isRequired,
+      regionName: React.PropTypes.string.isRequired,
       isSelectedInitially: React.PropTypes.bool,
       onRegionsSelected: React.PropTypes.func.isRequired,
       onRegionsDeselected: React.PropTypes.func.isRequired
@@ -204,8 +203,7 @@ App.prototype.onReactJsLoaded = function() {
           onChange: this.handleChange,
           id: htmlId
         }),
-        // TODO label with region name
-        React.createElement('label', {htmlFor: htmlId}, htmlId)
+        React.createElement('label', {htmlFor: htmlId}, this.props.regionName)
       );
     }
   });
@@ -297,27 +295,44 @@ App.prototype.onReactJsLoaded = function() {
     _getSelectableRegions: function() {
       var selectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds().slice();
       
-      // First, add all regions in App._SUGGESTED_REGION_IDS while also removing each of these from selectedRegionIds.
-      var regions = App._SUGGESTED_REGION_IDS.map(function(regionId) {
+      // First, add all regions in App._SUGGESTED_REGION_IDS_AND_NAMES while also removing each of these from selectedRegionIds.
+      var regions = App._SUGGESTED_REGION_IDS_AND_NAMES.map(function(regionIdAndName) {
+        var regionId = regionIdAndName[0];
         var index = selectedRegionIds.indexOf(regionId);
         if (-1 !== index) {
           selectedRegionIds.splice(index, 1);
         }
         return {
           isSelected: -1 !== index,
-          regionId: regionId
+          regionId: regionId,
+          regionName: this._getRegionNameById(regionId)
         };
-      });
+      }.bind(this));
 
-      // Add remaining regions. These aren't in App._SUGGESTED_REGION_IDS, rather, they're specified in the URL.
+      // Add remaining regions. These aren't in App._SUGGESTED_REGION_IDS_AND_NAMES, rather, they're specified in the URL.
       regions = regions.concat(selectedRegionIds.map(function(regionId) {
         return {
           isSelected: true,
-          regionId: regionId
+          regionId: regionId,
+          regionName: this._getRegionNameById(regionId)
         };
-      }));
+      }.bind(this)));
       
       return regions;
+    },
+
+    _getRegionNameById: function(id) {
+      var region = this.state.data.find(function(datum) {
+        return datum.id == id;
+      });
+      if (region) {
+        return region.name;
+      } else {
+        // Find name of region that matches ID, or default to "region N"
+        return App._SUGGESTED_REGION_IDS_AND_NAMES.reduce(function(prev, regionIdAndName) {
+          return regionIdAndName[0] == id ? regionIdAndName[1] : prev;
+        }, 'region ' + id);
+      }
     }
   });
 };
