@@ -37,8 +37,10 @@ App.prototype.onReactJsLoaded = function() {
         React.createElement('a', {href: this.props.url}, this.props.name));
       var conditionsCols = this.props.conditions.map(function(day, i) {
         return React.createElement('td', {key: i},
-          React.createElement('div', {className: this._getClassNames(day)}),
-          day + ' ' + this.props.surfQuant[i]);
+          React.createElement('div', null,
+            React.createElement('div', {className: this._getClassNames(day)}), day),
+          React.createElement('div', {className: 'SurfQuant'}, this.props.surfQuant[i])
+        );
       }.bind(this));
       return React.createElement('tr', {className: 'Region'}, nameCol, conditionsCols);
     },

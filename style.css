@@ -58,3 +58,7 @@ body {
   flex-direction: column;
   height: 100px;
 }
+
+.SurfQuant {
+  float: left;
+}
