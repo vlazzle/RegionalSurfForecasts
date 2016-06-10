@@ -1,7 +1,7 @@
 var NUM_AVAILABLE_DAYS_OF_CONDITIONS = 7;
 
 var RegionReportFetcher = function(regionId) {
-    this._url = 'http://api.surfline.com/v1/forecasts/' + regionId + '?&resources=resources%3Dwind%2Csurf%2Canalysis%2Cweather%2Ctide%2Csort&days=17&aggregate=true&units=e';
+    this._url = '//api.surfline.com/v1/forecasts/' + regionId + '?&resources=resources%3Dwind%2Csurf%2Canalysis%2Cweather%2Ctide%2Csort&days=17&aggregate=true&units=e';
 };
 
 RegionReportFetcher.onload = function(onSuccess, onError, json) {
