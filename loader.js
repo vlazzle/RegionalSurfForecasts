@@ -27,6 +27,12 @@ Loader.prototype._checkEverythingLoaded = function() {
   }
 };
 
+Loader.prototype._checkAppAndReactLoaded = function() {
+  if (this._isAppJsLoaded && this._isReactJsLoaded) {
+    App.getInstance().onReactJsLoaded();
+  }
+};
+
 Loader.prototype.onDomLoadeded = function() {
   this._isDomLoaded = true;
   this._checkEverythingLoaded();
@@ -34,12 +40,13 @@ Loader.prototype.onDomLoadeded = function() {
 
 Loader.prototype.onReactJsLoaded = function() {
   this._isReactJsLoaded = true;
-  App.getInstance().onReactJsLoaded();
+  this._checkAppAndReactLoaded();
   this._checkEverythingLoaded();
 };
 
 Loader.prototype.onAppJsLoadeded = function() {
   this._isAppJsLoaded = true;
+  this._checkAppAndReactLoaded();
   this._checkEverythingLoaded();
 };
 
