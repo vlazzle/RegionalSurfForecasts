@@ -174,7 +174,7 @@ App.prototype.onReactJsLoaded = function() {
       this.props.onChangeRegionSelection();
     },
 
-    handlePopState: function(event) {
+    handleHashChange: function(event) {
       var regionSelection = RegionSelection.getInstance();
       regionSelection.setFromUrl(event.state);
       var selectedIds = regionSelection.getSelectedRegionIds()
@@ -189,11 +189,11 @@ App.prototype.onReactJsLoaded = function() {
     },
 
     componentDidMount: function() {
-      window.onpopstate = this.handlePopState;
+      window.addEventListener('hashchange', this.handleHashChange);
     },
 
     componentWillUnmount: function() {
-      window.onpopstate = null;
+      window.removeEventListener('hashchange', this.handleHashChange);
     }
   });
 
@@ -275,7 +275,7 @@ App.prototype.onReactJsLoaded = function() {
       if (regionIds.length == 0) {
         return;
       }
-      
+
       var onNext = function(model) {
         this.setState(function(state, props) {
           var newDatum = {
@@ -309,7 +309,7 @@ App.prototype.onReactJsLoaded = function() {
 
     handleChangeRegionSelection: function() {
       var newSelectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds();
-      
+
       var regionIdsToAdd = newSelectedRegionIds.filter(function(id) {
         return -1 === this.state.selectedRegionIds.indexOf(id);
       }.bind(this));
@@ -331,7 +331,7 @@ App.prototype.onReactJsLoaded = function() {
 
     _getSelectableRegions: function() {
       var selectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds().slice();
-      
+
       // First, add all regions in App._SUGGESTED_REGION_IDS_AND_NAMES while also removing each of these from selectedRegionIds.
       var regions = App._SUGGESTED_REGION_IDS_AND_NAMES.map(function(regionIdAndName) {
         var regionId = regionIdAndName[0];
@@ -354,7 +354,7 @@ App.prototype.onReactJsLoaded = function() {
           regionName: this._getRegionNameById(regionId)
         };
       }.bind(this)));
-      
+
       return regions;
     },
 
