@@ -2,8 +2,8 @@ var RegionSelection = function() {
   this.setFromUrl();
 };
 
-// SF-San Mateo County & South Orange County
-RegionSelection._DEFAULT_SELECTED_REGION_IDS = ['2957', '2950'];
+// SF-San Mateo County & South LA
+RegionSelection._DEFAULT_SELECTED_REGION_IDS = ['2957', '2951'];
 
 RegionSelection.getInstance = function() {
   if (!RegionSelection._instance) {

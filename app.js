@@ -10,9 +10,16 @@ App.getInstance = function() {
 App._SUGGESTED_REGION_IDS_AND_NAMES = [
   ['2957', 'SF-San Mateo County'],
   ['2958', 'Santa Cruz'],
+  ['2959', 'Monterey'],
+  ['2960', 'Big Sur'],
+  ['2962', 'San Luis Obispo County'],
+  ['2952', 'Ventura'],
   ['2142', 'North Los Angeles'],
   ['2951', 'South Los Angeles'],
-  ['2950', 'South Orange County']
+  ['2143', 'North Orange County'],
+  ['2950', 'South Orange County'],
+  ['2144', 'North San Diego'],
+  ['2953', 'South San Diego Forecast']
 ];
 
 App.prototype.onReactJsLoaded = function() {
