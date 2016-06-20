@@ -43,5 +43,5 @@ RegionReportFetcher.onload = function(onSuccess, onError, json) {
 
 RegionReportFetcher.prototype.fetch = function(onSuccess, onError) {
     window.RegionReportFetcherOnloadJsonP = RegionReportFetcher.onload.bind(this, onSuccess, onError);
-    Loader.getInstance().importScript(this._url + '&callback=RegionReportFetcherOnloadJsonP');
+    Loader.getInstance().importScript(this._url + '&callback=RegionReportFetcherOnloadJsonP', null, onError);
 };

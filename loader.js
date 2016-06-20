@@ -66,13 +66,18 @@ Loader.prototype.onRegionSelectionJsLoaded = function() {
 };
 
 Loader.prototype.importScript = (function (oHead) {
-  function loadError (oError) {
-    throw new URIError('The script ' + oError.target.src + ' is not accessible.');
+  function loadError (fOnError, oError) {
+    var errorMsg = 'Error loading ' + oError.target.src;
+    if (fOnError) {
+      fOnError(errorMsg);
+    } else {
+      throw errorMsg;
+    }
   }
 
-  return function (sSrc, fOnload) {
+  return function (sSrc, fOnload, fOnError) {
     var oScript = document.createElement('script');
-    oScript.onerror = loadError;
+    oScript.onerror = loadError.bind(null, fOnError);
     if (fOnload) { oScript.onload = fOnload; }
     oHead.appendChild(oScript);
     oScript.src = sSrc;

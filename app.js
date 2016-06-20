@@ -306,7 +306,7 @@ App.prototype.onReactJsLoaded = function() {
 
       var onError = function(errors) {
         console.error(errors);
-        this.setState({errors: errors});
+        this.setState({errors: errors, isLoading: false});
       }.bind(this);
 
       var onCompleted = function() {
