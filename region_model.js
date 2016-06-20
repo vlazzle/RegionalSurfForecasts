@@ -68,7 +68,7 @@ RegionModel.find = function(ids, onNext, onError, onCompleted) {
   };
 
   ids.forEach(function(id) {
-    var fetcher = new RegionReportFetcher(id);
+    var fetcher = new RegionFetcher(id);
     fetcher.fetch(successFn, errorFn);
   });
 };
