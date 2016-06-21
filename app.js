@@ -258,7 +258,10 @@ App.prototype.onReactJsLoaded = function() {
 
   App.MultiRegionForecast = React.createClass({displayName: 'MultiRegionForecast',
     render: function() {
-      var regionList = React.createElement(App.RegionList, {data: this.state.data});
+      var data = Object.keys(this.state.data).map(function(id) {
+        return this.state.data[id];
+      }.bind(this));
+      var regionList = React.createElement(App.RegionList, {data: data});
       var errorList = React.createElement(App.ErrorList, {errors: this.state.errors});
       var loadingIndicator = React.createElement(App.LoadingIndicator, {isLoading: this.state.isLoading});
       var regionSelector = React.createElement(App.RegionSelector, {
@@ -271,10 +274,11 @@ App.prototype.onReactJsLoaded = function() {
 
     getInitialState: function() {
       return {
-        data: [],
+        data: {},
         errors: [],
         isLoading: false,
-        selectedRegionIds: []
+        // object keys represent the elements of a set
+        selectedRegionIds: {}
       };
     },
 
@@ -297,9 +301,14 @@ App.prototype.onReactJsLoaded = function() {
             days: model.days,
             url: model.url
           };
+          var newData = Object.assign({}, state.data);
+          newData[newDatum.id] = newDatum;
+          var newIdAssignment = {};
+          newIdAssignment[newDatum.id] = true;
+
           return {
-            data: state.data.concat([newDatum]),
-            selectedRegionIds: state.selectedRegionIds.concat([newDatum.id])
+            data: newData,
+            selectedRegionIds: Object.assign({}, state.selectedRegionIds, newIdAssignment)
           };
         });
       }.bind(this);
@@ -323,17 +332,21 @@ App.prototype.onReactJsLoaded = function() {
       var newSelectedRegionIds = RegionSelection.getInstance().getSelectedRegionIds();
 
       var regionIdsToAdd = newSelectedRegionIds.filter(function(id) {
-        return -1 === this.state.selectedRegionIds.indexOf(id);
+        return !this.state.selectedRegionIds[id];
       }.bind(this));
       this._addRegions(regionIdsToAdd);
 
       this.setState(function(state, props) {
-        var remainingIds = state.selectedRegionIds.filter(function(id) {
+        var remainingIds = Object.keys(state.selectedRegionIds).filter(function(id) {
           return -1 !== newSelectedRegionIds.indexOf(id);
         });
-        var remainingData = state.data.filter((function(datum) {
-          return -1 !== newSelectedRegionIds.indexOf(datum.id);
-        }));
+
+        var remainingData = Object.keys(state.data).filter(function(id) {
+          return -1 !== newSelectedRegionIds.indexOf(id);
+        }).map(function(id) {
+          return state.data[id];
+        });
+
         return {
           selectedRegionIds: remainingIds,
           data: remainingData
@@ -371,9 +384,7 @@ App.prototype.onReactJsLoaded = function() {
     },
 
     _getRegionNameById: function(id) {
-      var region = this.state.data.find(function(datum) {
-        return datum.id == id;
-      });
+      var region = this.state.data[id];
       if (region) {
         return region.name;
       } else {
