@@ -337,14 +337,18 @@ App.prototype.onReactJsLoaded = function() {
       this._addRegions(regionIdsToAdd);
 
       this.setState(function(state, props) {
-        var remainingIds = Object.keys(state.selectedRegionIds).filter(function(id) {
+        var remainingIds = {};
+        Object.keys(state.selectedRegionIds).filter(function(id) {
           return -1 !== newSelectedRegionIds.indexOf(id);
+        }).forEach(function(id) {
+          remainingIds[id] = true;
         });
 
-        var remainingData = Object.keys(state.data).filter(function(id) {
+        var remainingData = {};
+        Object.keys(state.data).filter(function(id) {
           return -1 !== newSelectedRegionIds.indexOf(id);
-        }).map(function(id) {
-          return state.data[id];
+        }).forEach(function(id) {
+          remainingData[id] = state.data[id];
         });
 
         return {
