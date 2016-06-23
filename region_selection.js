@@ -33,7 +33,7 @@ RegionSelection.prototype.removeSelectedRegionId = function(idToRemove) {
     return regionId !== idToRemove;
   });
 
-  if (newRegionIds.length == this._regionIds) {
+  if (newRegionIds.length == this._regionIds.length ) {
     return;
   }
 
