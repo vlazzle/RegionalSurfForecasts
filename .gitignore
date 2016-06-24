@@ -1,1 +1,7 @@
 .idea/workspace.xml
+public/*.js
+public/*.js.map
+/node_modules
+npm-debug.log
+.DS_Store
+/*.env

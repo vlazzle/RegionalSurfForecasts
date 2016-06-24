@@ -1,0 +1,26 @@
+{
+  "name": "surfspots",
+  "version": "1.0.0",
+  "description": "region surf forecast",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "tsc",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vlazzle/RegionalSurfForecasts.git"
+  },
+  "author": "Vladimir Chernis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vlazzle/RegionalSurfForecasts/issues"
+  },
+  "homepage": "https://github.com/vlazzle/RegionalSurfForecasts#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "typescript": "^1.8.10",
+    "typings": "^1.3.0"
+  }
+}
