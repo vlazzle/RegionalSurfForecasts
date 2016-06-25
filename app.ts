@@ -14,7 +14,7 @@ class App {
     static RegionToggle;
     static MultiRegionForecast;
 
-    static getInstance() {
+    static getInstance(): App {
         if (!App._instance) {
             App._instance = new App();
         }
@@ -22,7 +22,7 @@ class App {
     }
 
     // Associate IDs with default names to use until the real true name is loaded from the server.
-    static _SUGGESTED_REGION_IDS_AND_NAMES = [
+    static _SUGGESTED_REGION_IDS_AND_NAMES: [[string]] = [
         ['2957', 'SF-San Mateo County'],
         ['2958', 'Santa Cruz'],
         ['2959', 'Monterey'],
@@ -36,7 +36,7 @@ class App {
         ['2953', 'South San Diego']
     ];
 
-    onReactJsLoaded() {
+    onReactJsLoaded(): void {
         // TODO do this correctly and specify the types.
         // Trust me, it's there by now
         let React = window['React'];
@@ -419,7 +419,7 @@ class App {
         });
     }
 
-    onEverythingLoaded() {
+    onEverythingLoaded(): void {
         // TODO do this correctly and specify the types.
         // Trust me, it's there by now.
         let React = window['React'];

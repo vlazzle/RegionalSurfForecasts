@@ -2,7 +2,7 @@ class RegionFetcher {
     static NUM_AVAILABLE_DAYS_OF_CONDITIONS = 7;
     private _url: string;
 
-    static onload(onSuccess, onError, json) {
+    private static onload(onSuccess: (model: RegionModel)=>void, onError: (errorMsg: string)=>void, json) {
         // TODO instead of parsing the entire response, use https://github.com/dscape/clarinet
         var resp = json;
 
@@ -39,12 +39,13 @@ class RegionFetcher {
         }
     }
 
-    constructor(regionId) {
+    constructor(regionId: string) {
         this._url = '//api.surfline.com/v1/forecasts/' + regionId + '?&resources=resources%3Dwind%2Csurf%2Canalysis%2Cweather%2Ctide%2Csort&days=17&aggregate=true&units=e';
     }
 
-    fetch(onSuccess, onError) {
+    fetch(onSuccess: (model: RegionModel)=>void, onError: (errorMsg: string)=>void) {
         window['RegionFetcherOnloadJsonP'] = RegionFetcher.onload.bind(this, onSuccess, onError);
         Loader.getInstance().importScript(this._url + '&callback=RegionFetcherOnloadJsonP', null, onError);
     }
 }
+

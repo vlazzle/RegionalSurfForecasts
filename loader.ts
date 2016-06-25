@@ -1,6 +1,6 @@
 const IS_PRODUCTION  = false;
-var REACT_JS;
-var REACT_DOM_JS;
+var REACT_JS: string;
+var REACT_DOM_JS: string;
 if (IS_PRODUCTION) {
     REACT_JS = 'https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.min.js';
     REACT_DOM_JS = 'https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.min.js';
@@ -12,7 +12,7 @@ if (IS_PRODUCTION) {
 class Loader {
     static _instance: Loader;
 
-    static getInstance() {
+    static getInstance(): Loader {
         if (!Loader._instance) {
             Loader._instance = new Loader(function() {
                 App.getInstance().onEverythingLoaded();
@@ -21,11 +21,9 @@ class Loader {
         return Loader._instance;
     }
 
-    // TODO annotate as 3-ary function
-    public importScript;
+    importScript: (sSrc:string, fOnload?:()=>void, fOnError?:(errorMsg:string)=>void)=>void;
 
-    // TODO annotate as nullary function.
-    private _onEverythingLoaded;
+    private _onEverythingLoaded: ()=>void;
 
     private _isDomLoaded: boolean;
     private _isReactJsLoaded: boolean;
@@ -34,7 +32,7 @@ class Loader {
     private _isRegionModelJsLoaded: boolean;
     private _regionSelectionJsLoaded: boolean;
 
-    constructor(onEverythingLoadedFn) {
+    constructor(onEverythingLoadedFn: ()=>void) {
         this._onEverythingLoaded = onEverythingLoadedFn;
 
         this.importScript = (function (oHead) {
@@ -58,50 +56,50 @@ class Loader {
         })(document.head || document.getElementsByTagName('head')[0]);
     }
 
-    _isEverythingLoaded() {
+    private _isEverythingLoaded(): boolean {
         return this._isDomLoaded && this._isReactJsLoaded && this._isAppJsLoaded && this._isRegionFetcherJsLoaded && this._isRegionModelJsLoaded && this._regionSelectionJsLoaded;
     }
 
-    _checkEverythingLoaded() {
+    private _checkEverythingLoaded(): void {
         if (this._isEverythingLoaded()) {
             this._onEverythingLoaded();
         }
     }
 
-    _checkAppAndReactLoaded() {
+    private _checkAppAndReactLoaded(): void {
         if (this._isAppJsLoaded && this._isReactJsLoaded) {
             App.getInstance().onReactJsLoaded();
         }
     }
 
-    onDomLoadeded() {
+    onDomLoadeded(): void {
         this._isDomLoaded = true;
         this._checkEverythingLoaded();
     }
 
-    onReactJsLoaded() {
+    onReactJsLoaded(): void  {
         this._isReactJsLoaded = true;
         this._checkAppAndReactLoaded();
         this._checkEverythingLoaded();
     }
 
-    onAppJsLoadeded() {
+    onAppJsLoadeded(): void  {
         this._isAppJsLoaded = true;
         this._checkAppAndReactLoaded();
         this._checkEverythingLoaded();
     }
 
-    onRegionFetcherJsLoaded() {
+    onRegionFetcherJsLoaded(): void  {
         this._isRegionFetcherJsLoaded = true;
         this._checkEverythingLoaded();
     }
 
-    onRegionModelJsLoaded() {
+    onRegionModelJsLoaded(): void  {
         this._isRegionModelJsLoaded = true;
         this._checkEverythingLoaded();
     }
 
-    onRegionSelectionJsLoaded() {
+    onRegionSelectionJsLoaded(): void {
         this._regionSelectionJsLoaded = true;
         this._checkEverythingLoaded();
     }

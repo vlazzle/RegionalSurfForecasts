@@ -1,27 +1,27 @@
 class RegionModel {
     private id: string;
     private conditions: string[];
-    private surfMin;
-    private surfMax;
-    private surfPeak;
-    private canExceed: string;
+    private surfMin: number[];
+    private surfMax: number[];
+    private surfPeak: [number|string];
+    private canExceed: boolean[];
     private name: string;
     private url: string;
     private days: Date[];
 
-    static find(ids, onNext, onError, onCompleted) {
+    static find(ids: string[], onNext: (model: RegionModel)=>void, onError: (errors: string[])=>void, onCompleted: ()=>void) {
         var successes = 0;
-        var errors = [];
-        var successFn = function(model) {
+        var errors: string[] = [];
+        let successFn = function(model: RegionModel): void {
             onNext(model);
             successes++;
             checkDone();
         };
-        var errorFn = function(error) {
+        let errorFn = function(error: string): void {
             errors.push(error);
             checkDone();
         };
-        var checkDone = function() {
+        let checkDone = function(): void {
             if (successes + errors.length == ids.length) {
                 if (errors.length > 0) {
                     onError(errors);
@@ -37,7 +37,7 @@ class RegionModel {
         });
     }
     
-    constructor(id: string, name, conditions: string[], surfMin, surfMax, surfPeak, canExceed: string, url: string, startDate) {
+    constructor(id: string, name, conditions: string[], surfMin: number[], surfMax: number[], surfPeak, canExceed: string[], url: string, startDate) {
         if (!id) {
             throw 'missing id';
         }
@@ -71,25 +71,26 @@ class RegionModel {
         this.surfMin = surfMin;
         this.surfMax = surfMax;
         this.surfPeak = surfPeak;
-        this.canExceed = canExceed;
+        this.canExceed = canExceed.map(function(c) {
+            return c == 'TRUE';
+        });
         this.name = name;
         this.url = url;
 
-        var dayZero = new Date(startDate);
-        var oneDayInMs = 1000 * 60 * 60 * 24;
+        let dayZero = new Date(startDate);
+        let oneDayInMs = 1000 * 60 * 60 * 24;
         this.days = [];
-        var day = dayZero;
         for (var i = 0; i < conditions.length; i++) {
             this.days.push(new Date(dayZero.getTime() + i * oneDayInMs));
         }
     }
 
-    getSurfQuant() {
-        var surfQuant = [];
+    getSurfQuant(): string[]  {
+        let surfQuant: string[] = [];
         for (var i = 0; i < this.surfPeak.length; i++) {
-            var surfPeak = Number.parseInt(this.surfPeak[i]);
-            var occPeak = surfPeak ? ' occ. ' + surfPeak : '';
-            var plus = this.canExceed[i] == 'TRUE' ? '+' : '';
+            let surfPeak = Number.parseInt(<string>this.surfPeak[i]);
+            let occPeak = surfPeak ? ' occ. ' + surfPeak : '';
+            let plus = this.canExceed[i] ? '+' : '';
             surfQuant.push('' + this.surfMin[i] + '-' + this.surfMax[i] + 'ft' + plus + occPeak);
         }
         return surfQuant;
