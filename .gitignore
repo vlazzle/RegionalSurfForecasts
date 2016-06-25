@@ -1,4 +1,7 @@
 .idea/workspace.xml
+.idea/jsLibraryMappings.xml
+.idea/libraries/
+.idea/surfspots.iml
 public/*.js
 public/*.js.map
 /node_modules
