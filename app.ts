@@ -27,6 +27,8 @@ class App {
         ['2958', 'Santa Cruz'],
         ['2959', 'Monterey'],
         ['2962', 'San Luis Obispo County'],
+        ['2963', 'North Santa Barbara County'],
+        ['2141', 'Santa Barbara'],
         ['2952', 'Ventura'],
         ['2142', 'North Los Angeles'],
         ['2951', 'South Los Angeles'],
