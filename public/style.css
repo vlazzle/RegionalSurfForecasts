@@ -13,12 +13,15 @@ body, table {
 }
 
 body {
-  max-width: 1300px;
   margin: 0 auto;
 }
 
 a {
   color: #19CF86;
+}
+
+#content {
+  width: 1760px;
 }
 
 .RegionList table {
@@ -28,7 +31,7 @@ a {
 .RegionList th, .RegionList td {
   text-align: left;
   color: #666;
-  padding: 8px 7px;
+  padding: 8px 10px;
   width: 200px;
 }
 
