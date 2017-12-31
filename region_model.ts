@@ -91,7 +91,16 @@ class RegionModel {
             let surfPeak = Number.parseInt(<string>this.surfPeak[i]);
             let occPeak = surfPeak ? ' occ. ' + surfPeak : '';
             let plus = this.canExceed[i] ? '+' : '';
-            surfQuant.push('' + this.surfMin[i] + '-' + this.surfMax[i] + 'ft' + plus + occPeak);
+            let surfMin = this.surfMin[i] as any;
+            let surfMax = this.surfMax[i] as any;
+            let quant;
+            if (surfMin === '' && surfMax === '') {
+                quant = '-';
+            } else {
+                quant = '' + surfMin + '-' + surfMax + 'ft' + plus + occPeak;
+            }
+            surfQuant.push(quant);
+
         }
         return surfQuant;
     }
