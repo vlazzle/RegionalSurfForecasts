@@ -9,7 +9,13 @@
 body {
   font-family: helvetica, arial, sans-serif;
   max-width: 1300px;
-  margin: 15px auto;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+a {
+  color: #19CF86;
 }
 
 .RegionList table {
@@ -18,11 +24,17 @@ body {
 
 .RegionList th, td {
   text-align: left;
-  padding: 7px 0;
+  color: #666;
+  padding: 8px 7px;
 }
 
 .RegionList tr:hover td {
   background-color: #fefecf;
+}
+
+.RegionList td:first-child {
+  font-size: 70%;
+  width: 60px;
 }
 
 .ConditionSquare {
@@ -52,11 +64,25 @@ body {
   background-color: #f00;
 }
 
+.LoadingIndicatorContainer {
+  background: #73D5A2;
+}
+
+.LoadingIndicator {
+  margin: 0 0 0 8px;
+  color: white;
+  text-shadow: 1px 1px black;
+}
+
+.RegionSelectorContainer {
+  display: flex;
+  background: #EBF9F2;
+}
+
 .RegionSelector {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  height: 100px;
 }
 
 .SurfQuant {
@@ -64,5 +90,5 @@ body {
 }
 
 .RegionToggle {
-  padding: 10px 0;
+  padding: 10px 5px;
 }

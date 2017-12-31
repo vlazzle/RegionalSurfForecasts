@@ -151,7 +151,8 @@ class App {
             },
 
             render: function() {
-                return React.createElement('p', {className: this._getClassNames()}, 'loading...');
+                return React.createElement('div', {className: 'LoadingIndicatorContainer'},
+                    React.createElement('p', {className: this._getClassNames()}, 'Loading...'));
             },
 
             _getClassNames: function() {
@@ -185,7 +186,8 @@ class App {
                         ref: this.saveChildRef.bind(this, selectableRegion.regionId)
                     });
                 }.bind(this));
-                return React.createElement('div', {className: 'RegionSelector'}, checkboxes);
+                return React.createElement('div', {className: 'RegionSelectorContainer'},
+                        React.createElement('div', {className: 'RegionSelector'}, checkboxes));
             },
 
             saveChildRef: function(regionId, ref) {
@@ -289,7 +291,7 @@ class App {
                     onChangeRegionSelection: this.handleChangeRegionSelection
                 });
                 return React.createElement('div', {className: 'MultiRegionForecast'},
-                    loadingIndicator, regionSelector, errorList, regionList);
+                    loadingIndicator, errorList, regionList, regionSelector);
             },
 
             getInitialState: function() {
