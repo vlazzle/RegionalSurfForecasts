@@ -20,6 +20,12 @@ a {
   color: #19CF86;
 }
 
+input[type=checkbox] {
+  transform: scale(2);
+  transform-origin: bottom;
+  margin: 0 20px;
+}
+
 #content {
   width: 1760px;
 }
